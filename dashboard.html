@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AuthApp</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand"><a href="index.html">AuthApp</a></div>
+        <div class="nav-user">
+            <span id="userName">Loading...</span>
+            <button onclick="Auth.logout()" class="btn btn-secondary">Logout</button>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="dashboard-header">
+            <h1>Dashboard</h1>
+            <p>Welcome back! You are successfully authenticated.</p>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>Account Info</h3>
+                <div id="userInfo" class="user-info">
+                    <p><strong>Email:</strong> <span id="userEmail">-</span></p>
+                    <p><strong>User ID:</strong> <span id="userId">-</span></p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Protected Data</h3>
+                <button onclick="fetchProtectedData()" class="btn btn-primary">Fetch Protected Data</button>
+                <div id="protectedData" class="protected-data"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check authentication
+            if (!Auth.isLoggedIn()) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Load user data
+            const user = Auth.getUser();
+            if (user) {
+                document.getElementById('userName').textContent = user.name || user.email;
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('userId').textContent = user.id;
+            }
+        });
+        
+        async function fetchProtectedData() {
+            const result = await Auth.fetchProtected();
+            const dataDiv = document.getElementById('protectedData');
+            
+            if (result.success) {
+                dataDiv.innerHTML = `
+                    <div class="success-box">
+                        <p><strong>Message:</strong> ${result.data.message}</p>
+                        <p><strong>User ID:</strong> ${result.data.userId}</p>
+                        <p><strong>Timestamp:</strong> ${new Date(result.data.timestamp).toLocaleString()}</p>
+                    </div>
+                `;
+            } else {
+                dataDiv.innerHTML = `<div class="error-box">${result.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
