@@ -1,5 +1,5 @@
 // API Configuration
-const API_URL = 'http://localhost:3000/api'; // Change this to your Render URL after deployment
+const API_URL = 'https://backend-sign-up-6usl.onrender.com'; // Change this to your Render URL after deployment
 
 const Auth = {
     // Token management
